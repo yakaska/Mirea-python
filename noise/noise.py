@@ -1,4 +1,5 @@
 import tkinter as tk
+from math import floor, sin
 
 
 def pyshader(func, w, h):
@@ -13,9 +14,16 @@ def pyshader(func, w, h):
 
 # Ваш код здесь:
 def func(x, y):
-    if 0.1 <= x <= 0.9 and 0.1 <= y <= 0.9:
-        return 0, 0, 0
-    return 1, 1, 1
+    color = noise(x, y)
+    return color, color, color
+
+
+def noise(x, y):
+    return fract(sin(x * 12.9898 + y * 78.233) * 43758.5453123)
+
+
+def fract(x):
+    return x - floor(x)
 
 
 label = tk.Label()

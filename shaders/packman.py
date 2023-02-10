@@ -13,9 +13,25 @@ def pyshader(func, w, h):
 
 # Ваш код здесь:
 def func(x, y):
-    if 0.1 <= x <= 0.9 and 0.1 <= y <= 0.9:
-        return 0, 0, 0
-    return 1, 1, 1
+    color = circle(x, y, 0.3)
+
+    return color, color, 0
+
+
+def circle(x, y, rad):
+    tcx = 0.5 - x
+    tcy = 0.5 - y
+    dist = (tcx * tcx + tcy * tcy) ** 0.5
+    return 1 - smoothstep(dist, rad - (rad * 0.01), rad + (rad * 0.01))
+
+
+def clamp(x, min_val, max_val):
+    return min(max(x, min_val), max_val)
+
+
+def smoothstep(x, edge0, edge1):
+    t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0)
+    return t * t * (3.0 - 2.0 * t)
 
 
 label = tk.Label()
