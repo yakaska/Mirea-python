@@ -16,13 +16,16 @@ def func(x, y):
     tcx = 0.5 - x
     tcy = 0.5 - y
     pct = (tcx * tcx + tcy * tcy) ** 0.5
-    temp = clamp(0.5 - pct, 0.0, 1.0)
-    color = clamp(temp, 0.0, 0.8)
+    color = clamp(0.5 - pct, 0.0, 1.0)
     return color, color, 0
 
 
 def clamp(x, min_val, max_val):
     return min(max(x, min_val), max_val)
+
+
+def lerp(a, b, x):
+    return (1 - x) * a + x * b
 
 
 label = tk.Label()
