@@ -12,28 +12,30 @@ def pyshader(func, w, h):
 
 
 # Ваш код здесь:
-
-
 def func(x, y):
-    pcx = 0.5 - x
-    pcy = 0.5 - y
-    pct = (pcx ** 2 + pcy ** 2) ** 0.5
+    body_x = 0.5 - x
+    body_y = 0.5 - y
+    dist_body = dist(body_x, body_y)
 
-    px = 0.55 - x
-    py = 0.32 - y
-    pct_e = (px ** 2 + py ** 2) ** 0.5
+    eye_x = 0.55 - x
+    eye_y = 0.32 - y
+    dist_eye = dist(eye_x, eye_y)
 
-    up_tr = pcy > 2 * pcx / 3 and x >= 0.5 and y >= 0.5
-    lw_tr = pcy < -2 * pcx / 3 and x >= 0.5 >= y
+    up_tr = body_y > 2 * body_x / 3 and x >= 0.5 and y >= 0.5
+    lw_tr = body_y < -2 * body_x / 3 and x >= 0.5 >= y
 
-    if x > 0.45 > y and 0.36 - pct_e > 0.3:
+    if x > 0.45 > y and 0.36 - dist_eye > 0.3:
         return 0, 0, 0
     elif up_tr or lw_tr:
         return 0, 0, 0
-    elif 0.5 - pct > 0.2 and 0.5 - pct > 0.2:
+    elif 0.5 - dist_body > 0.2 and 0.5 - dist_body > 0.2:
         return 1, 1, 0
     else:
         return 0, 0, 0
+
+
+def dist(pcx, pcy):
+    return (pcx ** 2 + pcy ** 2) ** 0.5
 
 
 label = tk.Label()
