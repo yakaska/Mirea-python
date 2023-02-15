@@ -15,9 +15,17 @@ def pyshader(func, w, h):
 def func(x, y):
     tcx = 0.5 - x
     tcy = 0.5 - y
-    pct = (tcx * tcx + tcy * tcy) ** 0.5
-    color = clamp(0.5 - pct, 0.0, 1.0)
-    return color, color, 0
+    pct1 = dist(tcx, tcy)
+    tcx = 0.42 - x
+    tcy = 0.42 - y
+    pct2 = dist(tcx, tcy)
+    color1 = clamp((0.4 - pct1) * 2, 0.0, 1.0)
+    color2 = clamp((0.4 - pct2) * 2, 0.0, 1.0)
+    return color1, color2, 0
+
+
+def dist(tcx, tcy):
+    return (tcx * tcx + tcy * tcy) ** 0.5
 
 
 def clamp(x, min_val, max_val):
