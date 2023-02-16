@@ -14,8 +14,8 @@ def pyshader(func, w, h):
 
 # Ваш код здесь:
 def func(x, y):
-    sx = x * 10
-    sy = y * 10
+    sx = x * 20
+    sy = y * 20
     color = val_noise(sx, sy)
 
     return color, color, color
