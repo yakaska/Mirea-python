@@ -80,9 +80,10 @@ message = "E3238557 6204A1F8 E6537611 174E5747 5D954DA8 8C2DFE97 2911CB4C 2CB7C6
 k = [0, 4, 5, 1]
 
 message = message.split(' ')
-result = []
+res = []
 for i in range(1, len(message), 2):
     block1 = c_uint32(int(message[i - 1], 16)).value
     block2 = c_uint32(int(message[i], 16)).value
-    result.extend(decrypt_block([block1, block2], k))
-print("".join(map(chr, result)))
+    res.extend(decrypt_block([block1, block2], k))
+res = "".join(map(chr, res))
+print(res)
