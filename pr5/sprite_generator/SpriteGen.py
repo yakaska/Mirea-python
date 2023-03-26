@@ -1,9 +1,10 @@
-import matplotlib.pyplot as plt
-from PIL import Image
-import random
-import math
 import colorsys
 import copy
+import math
+import random
+
+import matplotlib.pyplot as plt
+from PIL import Image
 
 
 def generate(mask, color_variations=0.2, colored=True, brightness_noise=0.3, edge_brightness=0.3,
