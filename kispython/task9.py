@@ -2,19 +2,17 @@ import re
 
 
 def main(table):
-    regex_name = r'(\D+) \D. (\D*)'
-    regex_percentage = r'(\d*)%'
+    r_name = r'(\D+) \D. (\D*)'
+    r_perc = r'(\d*)%'
     result = []
     for line in table:
         filtered = list(filter(None, line))
-        removed_duplicates = list(dict.fromkeys(filtered))
-        removed_duplicates[0] = str(int(re.search(
-            regex_percentage, removed_duplicates[0]).group(1)) / 100)
-        removed_duplicates[1] = removed_duplicates[1][4::]
-        removed_duplicates[2] = "Да" if removed_duplicates[2] == "Y" else "Нет"
-        removed_duplicates[3] = " ".join(re.findall(
-            regex_name, removed_duplicates[3])[0])
-        result.append(removed_duplicates)
+        norm = list(dict.fromkeys(filtered))
+        norm[0] = str(int(re.search(r_perc, norm[0]).group(1)) / 100)
+        norm[1] = norm[1][4::]
+        norm[2] = "Да" if norm[2] == "Y" else "Нет"
+        norm[3] = " ".join(re.findall(r_name, norm[3])[0])
+        result.append(norm)
     return [list(i) for i in zip(*result)]
 
 
@@ -30,5 +28,14 @@ test_table_2 = [
     ['54%', None, '001-106-0220', None, 'Y', 'Анатолий К. Шецян', 'Y']
 ]
 
-print(main(test_table_1))
-print(main(test_table_2))
+test_table_3 = [
+    ['60%', None, '735-189-6143', None, 'N', 'Богдан Р. Гукивяк', 'N'],
+    ['19%', None, '646-795-6013', None, 'Y', 'Даниил С. Фебучий', 'Y'],
+    ['82%', None, '693-148-6482', None, 'N', 'Даниил А. Фузозак', 'N']
+]
+
+tables = [test_table_1, test_table_2, test_table_3]
+for table in tables:
+    for line in table:
+        print(line)
+    print()

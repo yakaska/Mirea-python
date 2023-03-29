@@ -122,6 +122,7 @@ def _apply_colors(mask, is_vertical_gradient, color_variations, colored, brightn
                     brightness = (math.sin((u / ulen) * math.pi) *
                                   (1 - brightness_noise) + random.random() * brightness_noise)
                     rgb_vals = colorsys.hls_to_rgb(hue, brightness, saturation)
+                    print(brightness)
                     rgb['r'] = rgb_vals[0]
                     rgb['g'] = rgb_vals[1]
                     rgb['b'] = rgb_vals[2]
