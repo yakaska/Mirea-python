@@ -7,8 +7,15 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 
-def generate(mask, color_variations=0.2, colored=True, brightness_noise=0.3, edge_brightness=0.3,
-             saturation=0.2, mirror=False):
+def generate(
+        mask,
+        color_variations=0.2,
+        colored=True,
+        brightness_noise=0.3,
+        edge_brightness=1.0,
+        saturation=0.2,
+        mirror=False
+):
     new_mask = copy.deepcopy(mask)
     height = len(new_mask)
     width = len(new_mask[0])
@@ -23,14 +30,33 @@ def generate(mask, color_variations=0.2, colored=True, brightness_noise=0.3, edg
         new_mask, width, height = _mirror_body(new_mask)
 
     new_mask = _generate_edges(new_mask, width, height)
-    new_mask = _apply_colors(new_mask, is_vertical_gradient, color_variations, colored, brightness_noise, saturation,
-                             edge_brightness, hue, height, width)
+    new_mask = _apply_colors(
+        new_mask,
+        is_vertical_gradient,
+        color_variations,
+        colored,
+        brightness_noise,
+        saturation,
+        edge_brightness,
+        hue,
+        height,
+        width
+    )
 
     return _array_to_image(new_mask)
 
 
-def generate_canvas(mask, color_variations=0.2, colored=True, brightness_noise=0.3, edge_brightness=0.3,
-                    saturation=0.2, mirror=False, n=200, nr_columns=20):
+def generate_map(
+        mask,
+        color_variations=0.2,
+        colored=True,
+        brightness_noise=0.3,
+        edge_brightness=0.3,
+        saturation=0.2,
+        mirror=False,
+        n=200,
+        nr_columns=20
+):
     images = [generate(mask, color_variations, colored, brightness_noise, edge_brightness, saturation, mirror)
               for _ in range(n)]
 
@@ -68,6 +94,7 @@ def _generate_body(mask, width, height):
     return mask
 
 
+# отзеркаливание спрайта
 def _mirror_body(mask):
     for i in range(len(mask)):
         mask[i].extend(mask[i][::-1])
@@ -76,6 +103,7 @@ def _mirror_body(mask):
     return mask, width, height
 
 
+# установка четырех границ
 def _generate_edges(mask, width, height):
     for x in range(width):
         for y in range(height):
@@ -92,14 +120,20 @@ def _generate_edges(mask, width, height):
     return mask
 
 
-def _apply_colors(mask, is_vertical_gradient, color_variations, colored, brightness_noise, saturation,
-                  edge_brightness, hue, height, width):
-    if is_vertical_gradient:
-        ulen = height
-        vlen = width
-    else:
-        ulen = height
-        vlen = width
+def _apply_colors(
+        mask,
+        is_vertical_gradient,
+        color_variations,
+        colored,
+        brightness_noise,
+        saturation,
+        edge_brightness,
+        hue,
+        height,
+        width
+):
+    ulen = height
+    vlen = width
 
     for u in range(ulen):
         is_new_color = abs((random.random() * 2 - 1)
@@ -107,13 +141,11 @@ def _apply_colors(mask, is_vertical_gradient, color_variations, colored, brightn
                            + (random.random() * 2 - 1)) / 3
 
         if is_new_color > (1 - color_variations):
-            hue = random.random()
+            hue = random.random()  # оттенок
 
         for v in range(vlen):
-            if is_vertical_gradient:
-                val = mask[u][v]
-            else:
-                val = mask[u][v]
+
+            val = mask[u][v]
 
             rgb = {"r": 1, "g": 1, "b": 1}
 
@@ -122,7 +154,6 @@ def _apply_colors(mask, is_vertical_gradient, color_variations, colored, brightn
                     brightness = (math.sin((u / ulen) * math.pi) *
                                   (1 - brightness_noise) + random.random() * brightness_noise)
                     rgb_vals = colorsys.hls_to_rgb(hue, brightness, saturation)
-                    print(brightness)
                     rgb['r'] = rgb_vals[0]
                     rgb['g'] = rgb_vals[1]
                     rgb['b'] = rgb_vals[2]
@@ -153,28 +184,31 @@ def _array_to_image(mask):
 
 
 # http://web.archive.org/web/20080228054410/http://www.davebollinger.com/works/pixelspaceships/
+# http://web.archive.org/web/20080228054405/http://www.davebollinger.com/works/pixelrobots/
 if __name__ == '__main__':
-    robot = [[0, 0, 0, 0],
-             [0, 1, 1, 1],
-             [0, 1, 2, 2],
-             [0, 0, 1, 2],
-             [0, 0, 0, 2],
-             [1, 1, 1, 2],
-             [0, 1, 1, 2],
-             [0, 0, 0, 2],
-             [0, 0, 0, 2],
-             [0, 1, 2, 2],
-             [1, 1, 0, 0]]
+    robot = [
+        [0, 0, 0, 0],
+        [0, 1, 1, 1],
+        [0, 1, 2, 2],
+        [0, 0, 1, 2],
+        [0, 0, 0, 2],
+        [1, 1, 1, 2],
+        [0, 1, 1, 2],
+        [0, 0, 0, 2],
+        [0, 0, 0, 2],
+        [0, 1, 2, 2],
+        [1, 1, 0, 0]
+    ]
 
-    im = generate_canvas(robot,
-                         color_variations=0.1,
-                         brightness_noise=0.0,
-                         edge_brightness=0.0,
-                         saturation=0.5,
-                         colored=True,
-                         mirror=True,
-                         n=80,
-                         nr_columns=20)
+    im = generate_map(robot,
+                      color_variations=0.95,
+                      brightness_noise=0.0,
+                      edge_brightness=0.1,
+                      saturation=0.5,
+                      colored=True,
+                      mirror=True,
+                      n=80,
+                      nr_columns=20)
     im.resize((im.size[0] * 2, im.size[1] * 2))
     plt.imshow(im)
     plt.show()

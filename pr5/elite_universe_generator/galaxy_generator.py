@@ -47,6 +47,7 @@ def main():
         n.append(tn)
 
     plt.scatter(x, y, s=2, color='white')
+
     for i, txt in enumerate(n):
         plt.annotate(txt, (x[i] + 0.5, y[i] + 0.5))
 
