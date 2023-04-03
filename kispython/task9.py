@@ -8,7 +8,7 @@ def main(table):
     for line in table:
         filtered = list(filter(None, line))
         norm = list(dict.fromkeys(filtered))
-        norm[0] = str(int(re.search(r_perc, norm[0]).group(1)) / 100)
+        norm[0] = f"{(int(re.search(r_perc, norm[0]).group(1)) / 100):.2f}"
         norm[1] = norm[1][4::]
         norm[2] = "Да" if norm[2] == "Y" else "Нет"
         norm[3] = " ".join(re.findall(r_name, norm[3])[0])
@@ -34,7 +34,13 @@ test_table_3 = [
     ['82%', None, '693-148-6482', None, 'N', 'Даниил А. Фузозак', 'N']
 ]
 
+
 tables = [test_table_1, test_table_2, test_table_3]
+
+for i in range(len(tables)):
+    tables[i] = main(tables[i])
+
+
 for table in tables:
     for line in table:
         print(line)

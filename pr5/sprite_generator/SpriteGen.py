@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 
-def generate(
+def make(
         mask,
         color_variations=0.2,
         colored=True,
@@ -24,15 +24,16 @@ def generate(
     saturation = max(min(random.random() * saturation, 1), 0)
     hue = random.random()
 
-    new_mask = _generate_body(new_mask, width, height)
+    new_mask = make_body(new_mask, width, height)
 
     if mirror:
-        new_mask, width, height = _mirror_body(new_mask)
+        new_mask, width, height = mirror_body(new_mask)
+    else:
+        new_mask, width, height = mirror_body_small(new_mask)
 
-    new_mask = _generate_edges(new_mask, width, height)
-    new_mask = _apply_colors(
+    new_mask = make_edges(new_mask, width, height)
+    new_mask = apply_colors(
         new_mask,
-        is_vertical_gradient,
         color_variations,
         colored,
         brightness_noise,
@@ -43,10 +44,10 @@ def generate(
         width
     )
 
-    return _array_to_image(new_mask)
+    return to_image(new_mask)
 
 
-def generate_map(
+def make_map(
         mask,
         color_variations=0.2,
         colored=True,
@@ -57,7 +58,7 @@ def generate_map(
         n=200,
         nr_columns=20
 ):
-    images = [generate(mask, color_variations, colored, brightness_noise, edge_brightness, saturation, mirror)
+    images = [make(mask, color_variations, colored, brightness_noise, edge_brightness, saturation, mirror)
               for _ in range(n)]
 
     space = 6
@@ -80,7 +81,7 @@ def generate_map(
     return background
 
 
-def _generate_body(mask, width, height):
+def make_body(mask, width, height):
     for x in range(width):
         for y in range(height):
             if mask[y][x] == 1:
@@ -95,16 +96,24 @@ def _generate_body(mask, width, height):
 
 
 # отзеркаливание спрайта
-def _mirror_body(mask):
+def mirror_body(mask):
     for i in range(len(mask)):
-        mask[i].extend(mask[i][::-1])
+        mask[i].extend(mask[i][1::-1])
     height = len(mask)
     width = len(mask[0])
     return mask, width, height
 
 
+def mirror_body_small(mask):
+    for i in range(len(mask)):
+        mask[i].extend(mask[i][1::-1])
+    height = len(mask)
+    width = len(mask[0])
+    return mask, 5, 5
+
+
 # установка четырех границ
-def _generate_edges(mask, width, height):
+def make_edges(mask, width, height):
     for x in range(width):
         for y in range(height):
             if mask[y][x] == 1:
@@ -120,9 +129,8 @@ def _generate_edges(mask, width, height):
     return mask
 
 
-def _apply_colors(
+def apply_colors(
         mask,
-        is_vertical_gradient,
         color_variations,
         colored,
         brightness_noise,
@@ -174,7 +182,7 @@ def _apply_colors(
     return mask
 
 
-def _array_to_image(mask):
+def to_image(mask):
     width, height = len(mask[0]), len(mask)
     data = sum(mask, [])
 
@@ -200,7 +208,7 @@ if __name__ == '__main__':
         [1, 1, 0, 0]
     ]
 
-    im = generate_map(robot,
+    sprite = make_map(robot,
                       color_variations=0.95,
                       brightness_noise=0.0,
                       edge_brightness=0.1,
@@ -209,6 +217,6 @@ if __name__ == '__main__':
                       mirror=True,
                       n=80,
                       nr_columns=20)
-    im.resize((im.size[0] * 2, im.size[1] * 2))
-    plt.imshow(im)
+    sprite.resize((sprite.size[0] * 2, sprite.size[1] * 2))
+    plt.imshow(sprite)
     plt.show()
