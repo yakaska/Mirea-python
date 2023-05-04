@@ -57,7 +57,8 @@ def test():
     assert o.fade() == 5
     assert o.fade() == 7
     assert o.race() == 8
-    raises(lambda: o.fade(), MealyError)
+    with raises(lambda: o.fade(), MealyError):
+        print('ass')
     assert o.race() == 9
     o = main()
     assert o.fade() == 0
